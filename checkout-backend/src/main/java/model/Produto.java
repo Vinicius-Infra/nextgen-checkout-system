@@ -26,9 +26,9 @@ public class Produto extends PanacheEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     public BigDecimal preco;
 
-    @NotNull(message = "A quantidade em stock é obrigatória")
-    @PositiveOrZero(message = "A quantidade em stock não pode ser negativa")
+    @NotNull(message = "A quantidade em estoque é obrigatória")
+    @PositiveOrZero(message = "A quantidade em estoque não pode ser negativa")
     @Column(nullable = false)
-    public Integer quantidadeStock;
-    
+    public Integer quantidadeEstoque;
+
 }
