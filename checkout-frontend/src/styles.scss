@@ -1,1 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+/* Avisa o motor do Tailwind v4 para ler todos os HTMLs e TS da pasta app */
+@source "./app/**/*.{html,ts}";
