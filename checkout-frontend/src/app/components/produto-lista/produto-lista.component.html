@@ -1,7 +1,7 @@
 <div class="container mx-auto p-6">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-gray-800 tracking-tight">🛒 NextGen Checkout - Painel de Produtos</h2>
-    <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200">
+    <button (click)="abrirModalCadastro()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 cursor-pointer">
       + Novo Produto
     </button>
   </div>
@@ -30,13 +30,57 @@
             </span>
           </td>
         </tr>
-        
         <tr *ngIf="produtos.length === 0">
           <td colspan="5" class="px-6 py-10 text-center text-gray-400 font-medium">
-            Nenhum produto encontrado no PostgreSQL. Cadastre um item usando o Postman para ver a mágica acontecer!
+            Nenhum produto cadastrado no banco de dados.
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<div *ngIf="exibirModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-100">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-gray-800">📦 Cadastrar Novo Produto</h3>
+      <button (click)="exibirModal = false" class="text-gray-400 hover:text-gray-600 text-2xl font-semibold cursor-pointer">&times;</button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Nome do Produto</label>
+        <input type="text" [(ngModel)]="novoProduto.nome" placeholder="Ex: Arroz Agulhinha 5kg" 
+               class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Código de Barras</label>
+        <input type="text" [(ngModel)]="novoProduto.codigoBarras" placeholder="Ex: 7891234567890" 
+               class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-mono">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Preço (R$)</label>
+          <input type="number" [(ngModel)]="novoProduto.preco" placeholder="0.00" step="0.01"
+                 class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Qtd. em Estoque</label>
+          <input type="number" [(ngModel)]="novoProduto.quantidadeEstoque" placeholder="0" 
+                 class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-3 mt-6">
+      <button (click)="exibirModal = false" class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-lg transition">
+        Cancelar
+      </button>
+      <button (click)="salvarProduto()" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition">
+        Salvar Produto
+      </button>
+    </div>
   </div>
 </div>
