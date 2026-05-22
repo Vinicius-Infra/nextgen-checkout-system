@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  checkout-db:
+    image: postgres:16-alpine
+    container_name: nextgen-checkout-db
+    restart: always
+    environment:
+      POSTGRES_USER: nextgen_admin
+      POSTGRES_PASSWORD: checkout_secure_pass
+      POSTGRES_DB: nextgen_checkout
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_checkout_data:/var/lib/postgresql/data
+    networks:
+      - checkout-network
+
+networks:
+  checkout-network:
+    driver: bridge
+
+volumes:
+  postgres_checkout_data:
+    driver: local
