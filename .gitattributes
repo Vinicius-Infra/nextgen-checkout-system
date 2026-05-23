@@ -1,0 +1,10 @@
+# Forçar o GitHub a ler e computar todo o ecossistema do frontend
+checkout-frontend/**/*.ts linguist-detectable=true
+checkout-frontend/**/*.html linguist-detectable=true
+checkout-frontend/**/*.scss linguist-detectable=true
+
+# Garantir que dependências e builds sejam ignorados no gráfico
+**/node_modules/* linguist-vendored
+**/dist/* linguist-vendored
+**/.angular/* linguist-vendored
+**/target/* linguist-vendored
