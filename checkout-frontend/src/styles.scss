@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* Avisa o motor do Tailwind v4 para ler todos os HTMLs e TS da pasta app */
+@source "./app/**/*.{html,ts}";
