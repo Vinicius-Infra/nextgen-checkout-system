@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # 1. Banco de Dados Relacional
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: nextgen-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: checkout_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nextgen-network
+    restart: always
+
+  # Os serviços de checkout-backend e checkout-frontend entrarão aqui 
+  # assim que criarmos os seus respectivos Dockerfiles!
+
+volumes:
+  postgres_data:
+
+networks:
+  nextgen-network:
+    driver: bridge
