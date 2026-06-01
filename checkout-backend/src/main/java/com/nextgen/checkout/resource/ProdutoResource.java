@@ -40,12 +40,10 @@ public class ProdutoResource {
 
     @GET
     @Path("/bipar/{codigoBarras}")
-    public Response buscarPorCodigo(@PathParam("codigoBarras") String codigoBarras) {
-        // Busca o produto usando os recursos do Panache Entity/Repository
-        Produto produto = Produto.find("codigo_barras", codigoBarras).firstResult();
+    public Response buscarPorCodigo(@PathParam("codigoBarras") String codigoBarras) {        
+        Produto produto = Produto.find("codigoBarras", codigoBarras).firstResult();
         
         if (produto == null) {
-            // Retorna 404 caso o operador bipe algo não cadastrado
             return Response.status(Response.Status.NOT_FOUND)
                            .entity("{\"erro\": \"Produto não cadastrado!\"}")
                            .build();
