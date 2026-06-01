@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ProdutoService } from '../../services/produto.service';
+import { VendaService } from '../../services/venda.service';
 import { Produto } from '../../models/produto';
 
 interface ItemCarrinho {
@@ -24,28 +24,28 @@ export class ProdutoCheckoutComponent {
   valorTotalGeral: number = 0;
   mensagemErro: string = '';
 
-  constructor(private produtoService: ProdutoService) {}
+  // Injetando apenas o VendaService que gerencia o fluxo de venda/bipe
+  constructor(private vendaService: VendaService) {}
 
   buscarProduto(): void {
     if (!this.codigoPesquisa.trim()) return;
 
-    // Reaproveitando o Service que você já validou!
-    this.produtoService.listarTodos().subscribe({
-      next: (produtos) => {
-        // Simula a busca por código de barras na lista vinda do Quarkus
-        const produtoAchado = produtos.find(p => p.codigoBarras === this.codigoPesquisa.trim());
-
-        if (produtoAchado) {
-          this.adicionarAoCarrinho(produtoAchado);
-          this.codigoPesquisa = ''; // Limpa o input para o próximo item
-          this.mensagemErro = '';
-        } else {
-          this.mensagemErro = 'Produto não encontrado ou código inválido!';
-        }
+    // Consumindo o endpoint real do Quarkus via VendaService
+    this.vendaService.biparProduto(this.codigoPesquisa.trim()).subscribe({
+      next: (produtoAchado: Produto) => {
+        // Se o Quarkus achar o produto, adicionamos ou incrementamos no carrinho local
+        this.adicionarAoCarrinho(produtoAchado);
+        this.codigoPesquisa = ''; // Limpa o input para o próximo item
+        this.mensagemErro = '';
       },
       error: (err) => {
-        console.error('Erro ao buscar produto no checkout:', err);
-        this.mensagemErro = 'Erro de comunicação com o servidor.';
+        // Se o Quarkus devolver 404 (Not Found), cai aqui automaticamente
+        if (err.status === 404) {
+          this.mensagemErro = 'Produto não cadastrado ou código inválido!';
+        } else {
+          this.mensagemErro = 'Erro de comunicação com o servidor backend.';
+        }
+        this.codigoPesquisa = ''; // Limpa para o operador tentar de novo
       }
     });
   }
