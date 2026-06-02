@@ -25,7 +25,7 @@ export class ProdutoCheckoutComponent {
   mensagemErro: string = '';
 
   // Injetando apenas o VendaService que gerencia o fluxo de venda/bipe
-  constructor(private vendaService: VendaService) {}
+  constructor(private vendaService: VendaService) { }
 
   buscarProduto(): void {
     if (!this.codigoPesquisa.trim()) return;
@@ -75,5 +75,62 @@ export class ProdutoCheckoutComponent {
     this.carrinho = [];
     this.valorTotalGeral = 0;
     this.mensagemErro = '';
+  }
+
+  concluirVenda(): void {
+    if (this.carrinho.length === 0) {
+      // DEDO-DURO: Vai forçar um alerta visual na tela e no console assim que clicar
+      alert('O botão foi clicado com sucesso!');
+      console.log('Entrou na função concluirVenda. Carrinho atual:', this.carrinho);
+
+      if (this.carrinho.length === 0) {
+        this.mensagemErro = 'Não é possível fechar uma venda com o carrinho vazio!';
+        return;
+      }
+
+      this.mensagemErro = 'Não é possível fechar uma venda com o carrinho vazio!';
+      return;
+    }
+
+    const payloadBackend = {
+      itens: this.carrinho.map(item => ({
+        produtoId: item.produto.id || 0,
+        quantidade: item.quantidade
+      }))
+    };
+
+    this.vendaService.fecharVenda(payloadBackend).subscribe({
+      next: (resposta) => {
+        const htmlDoCupom = resposta.cupomHtml;
+
+        // 1. Criamos um container temporário na própria página (Sem pop-ups!)
+        const printContainer = document.createElement('div');
+        printContainer.id = 'print-section';
+
+        // 2. Injetamos as duas vias (Cliente e Estabelecimento)
+        printContainer.innerHTML = `
+          ${htmlDoCupom}
+          <p style="text-align:center; font-family:monospace; margin:10px 0;">--------------------------------</p>
+          <p style="text-align:center; font-family:monospace; font-size:10px; margin:0 0 10px 0;">VIA DO ESTABELECIMENTO</p>
+          ${htmlDoCupom}
+        `;
+
+        // 3. Adicionamos temporariamente ao corpo da página
+        document.body.appendChild(printContainer);
+
+        // 4. Dispara a impressão nativa do navegador
+        window.print();
+
+        // 5. Remove o container da tela após fechar o painel de impressão
+        document.body.removeChild(printContainer);
+
+        // 6. Reseta o caixa com sucesso
+        this.limparCupom();
+      },
+      error: (err) => {
+        this.mensagemErro = 'Falha ao processar o fechamento da venda no servidor.';
+        console.error(err);
+      }
+    });
   }
 }

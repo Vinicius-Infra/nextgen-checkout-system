@@ -1,0 +1,18 @@
+// Regra que controla o que aparece na impressora
+@media print {
+  // Esconde TUDO do sistema do caixa
+  body * {
+    visibility: hidden;
+  }
+  // Mostra APENAS o nosso container do cupom temporário
+  #print-section, #print-section * {
+    visibility: visible;
+  }
+  // Posiciona o cupom no topo esquerdo da folha térmica
+  #print-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 280px; // Largura perfeita para bobinas térmicas de 80mm
+  }
+}
