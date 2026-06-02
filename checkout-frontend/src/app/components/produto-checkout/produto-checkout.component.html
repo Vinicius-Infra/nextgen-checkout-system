@@ -1,9 +1,11 @@
 <div class="min-h-screen bg-gray-100 p-6 font-sans">
-  <div class="max-w-7xl mx-auto flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+  <div
+    class="max-w-7xl mx-auto flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
     <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2">
       🖥️ NextGen POS - Frente de Caixa
     </h1>
-    <a routerLink="/produtos" class="text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition">
+    <a routerLink="/produtos"
+      class="text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition">
       📊 Ir para o Painel Administrativo →
     </a>
   </div>
@@ -11,22 +13,29 @@
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2 space-y-6">
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <label class="block text-sm font-bold uppercase text-gray-500 mb-2 tracking-wider">Passar no Leitor (Código de Barras)</label>
+        <label class="block text-sm font-bold uppercase text-gray-500 mb-2 tracking-wider">Passar no Leitor (Código de
+          Barras)</label>
         <div class="flex gap-3">
-          <input type="text" [(ngModel)]="codigoPesquisa" (keyup.enter)="buscarProduto()" placeholder="Digite ou bipe o código e aperte Enter"
-                 class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition" autofocus>
-          <button (click)="buscarProduto()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 rounded-xl shadow transition cursor-pointer">
+          <input type="text" [(ngModel)]="codigoPesquisa" (keyup.enter)="buscarProduto()"
+            placeholder="Digite ou bipe o código e aperte Enter"
+            class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition"
+            autofocus>
+          <button (click)="buscarProduto()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 rounded-xl shadow transition cursor-pointer">
             Bipar
           </button>
         </div>
-        <p *ngIf="mensagemErro" class="text-red-500 text-sm font-medium mt-2 flex items-center gap-1">⚠️ {{ mensagemErro }}</p>
+        <p *ngIf="mensagemErro" class="text-red-500 text-sm font-medium mt-2 flex items-center gap-1">⚠️ {{ mensagemErro
+          }}</p>
       </div>
 
       <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-md flex justify-between items-center min-h-[160px]">
         <div *ngIf="carrinho.length > 0; else semItem">
           <p class="text-xs font-bold uppercase text-slate-400 tracking-widest mb-1">Último Item Detectado</p>
-          <h3 class="text-3xl font-black tracking-tight text-white">{{ carrinho[carrinho.length - 1].produto.nome }}</h3>
-          <p class="text-sm font-mono text-slate-400 mt-1">EAN: {{ carrinho[carrinho.length - 1].produto.codigoBarras }}</p>
+          <h3 class="text-3xl font-black tracking-tight text-white">{{ carrinho[carrinho.length - 1].produto.nome }}
+          </h3>
+          <p class="text-sm font-mono text-slate-400 mt-1">EAN: {{ carrinho[carrinho.length - 1].produto.codigoBarras }}
+          </p>
         </div>
         <ng-template #semItem>
           <div>
@@ -45,15 +54,18 @@
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between min-h-[450px]">
       <div>
-        <h2 class="text-lg font-bold text-gray-800 border-b border-dashed border-gray-200 pb-3 mb-4 flex items-center gap-2">
+        <h2
+          class="text-lg font-bold text-gray-800 border-b border-dashed border-gray-200 pb-3 mb-4 flex items-center gap-2">
           📄 Cupom Fiscal Eletrônico
         </h2>
 
         <div class="space-y-3 max-h-[280px] overflow-y-auto pr-1">
-          <div *ngFor="let item of carrinho; let i = index" class="flex justify-between items-start text-sm text-gray-700">
+          <div *ngFor="let item of carrinho; let i = index"
+            class="flex justify-between items-start text-sm text-gray-700">
             <div class="max-w-[70%]">
               <p class="font-semibold text-gray-800">{{ i + 1 }}. {{ item.produto.nome }}</p>
-              <p class="text-xs text-gray-400 font-mono">{{ item.quantidade }} un x R$ {{ item.produto.preco | number:'1.2-2' }}</p>
+              <p class="text-xs text-gray-400 font-mono">{{ item.quantidade }} un x R$ {{ item.produto.preco |
+                number:'1.2-2' }}</p>
             </div>
             <span class="font-mono font-medium text-gray-900">R$ {{ item.totalItem | number:'1.2-2' }}</span>
           </div>
@@ -68,10 +80,11 @@
         </div>
         <div class="grid grid-cols-2 gap-3">
           <button (click)="limparCupom()" [disabled]="carrinho.length === 0"
-                  class="px-4 py-2 text-sm font-semibold border border-gray-200 text-gray-500 hover:bg-gray-50 rounded-xl transition disabled:opacity-50 disabled:hover:bg-white cursor-pointer">
+            class="px-4 py-2 text-sm font-semibold border border-gray-200 text-gray-500 hover:bg-gray-50 rounded-xl transition disabled:opacity-50 disabled:hover:bg-white cursor-pointer">
             Cancelar Subtotal
           </button>
-          <button [disabled]="carrinho.length === 0" class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow transition disabled:opacity-50 cursor-pointer">
+          <button type="button" (click)="concluirVenda()"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl shadow transition cursor-pointer text-center text-sm">
             Fechar Venda
           </button>
         </div>
