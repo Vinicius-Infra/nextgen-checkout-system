@@ -31,4 +31,12 @@ public class Produto extends PanacheEntity {
     @Column(nullable = false)
     public Integer quantidadeEstoque;
 
+    public void diminuirEstoque(int quantidadeVendida) {
+        if (this.quantidadeEstoque < quantidadeVendida) {
+            throw new IllegalArgumentException("Estoque insuficiente para o produto: " + this.nome + 
+                " (Disponível: " + this.quantidadeEstoque + ", Solicitado: " + quantidadeVendida + ")");
+        }
+        this.quantidadeEstoque -= quantidadeVendida;
+    }
+
 }

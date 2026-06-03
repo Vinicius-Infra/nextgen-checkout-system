@@ -77,17 +77,9 @@ export class ProdutoCheckoutComponent {
     this.mensagemErro = '';
   }
 
-  concluirVenda(): void {
+ concluirVenda(): void {
+    // 1. Validação de segurança para carrinho vazio
     if (this.carrinho.length === 0) {
-      // DEDO-DURO: Vai forçar um alerta visual na tela e no console assim que clicar
-      alert('O botão foi clicado com sucesso!');
-      console.log('Entrou na função concluirVenda. Carrinho atual:', this.carrinho);
-
-      if (this.carrinho.length === 0) {
-        this.mensagemErro = 'Não é possível fechar uma venda com o carrinho vazio!';
-        return;
-      }
-
       this.mensagemErro = 'Não é possível fechar uma venda com o carrinho vazio!';
       return;
     }
@@ -103,11 +95,11 @@ export class ProdutoCheckoutComponent {
       next: (resposta) => {
         const htmlDoCupom = resposta.cupomHtml;
 
-        // 1. Criamos um container temporário na própria página (Sem pop-ups!)
+        // 2. Criamos o container temporário aplicando a classe idêntica ao SCSS
         const printContainer = document.createElement('div');
-        printContainer.id = 'print-section';
+        printContainer.className = 'secao-impressao-venda'; // Vincula com o @media print
 
-        // 2. Injetamos as duas vias (Cliente e Estabelecimento)
+        // 3. Injetamos as duas vias (Cliente e Estabelecimento)
         printContainer.innerHTML = `
           ${htmlDoCupom}
           <p style="text-align:center; font-family:monospace; margin:10px 0;">--------------------------------</p>
@@ -115,20 +107,21 @@ export class ProdutoCheckoutComponent {
           ${htmlDoCupom}
         `;
 
-        // 3. Adicionamos temporariamente ao corpo da página
+        // 4. Injeta, imprime e limpa o DOM
         document.body.appendChild(printContainer);
-
-        // 4. Dispara a impressão nativa do navegador
         window.print();
-
-        // 5. Remove o container da tela após fechar o painel de impressão
         document.body.removeChild(printContainer);
 
-        // 6. Reseta o caixa com sucesso
+        // 5. Reseta o caixa com sucesso
         this.limparCupom();
       },
       error: (err) => {
-        this.mensagemErro = 'Falha ao processar o fechamento da venda no servidor.';
+        // 6. Captura dinâmica do erro de estoque enviado pelo Quarkus
+        if (err.status === 400 && err.error && err.error.erro) {
+          this.mensagemErro = err.error.erro; // Exibe: "Estoque insuficiente para o produto:..."
+        } else {
+          this.mensagemErro = 'Falha ao processar o fechamento da venda no servidor.';
+        }
         console.error(err);
       }
     });

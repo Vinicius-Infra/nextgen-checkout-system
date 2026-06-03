@@ -1,0 +1,29 @@
+/* ==========================================================================
+   ESTILOS GLOBAIS DE IMPRESSÃO (BOBINA DE 80MM) - ADICIONAR NO STYLES.SCSS
+   ========================================================================== */
+@media print {
+  /* 1. Força a ocultação do app-root do Angular e de toda a interface do sistema */
+  body > :not(.secao-impressao-venda) {
+    display: none !important;
+  }
+
+  /* 2. Força a exibição e formatação exclusiva do cupom térmico */
+  .secao-impressao-venda {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 74mm !important; /* Aproveita melhor a área útil de bobinas de 80mm */
+    margin: 0 !important;
+    padding: 3mm !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* 3. Limpa as margens físicas da página e remove cabeçalhos/rodapés do navegador */
+  @page {
+    size: auto;
+    margin: 0;
+  }
+}

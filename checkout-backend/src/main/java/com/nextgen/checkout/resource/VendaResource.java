@@ -38,21 +38,36 @@ public class VendaResource {
         for (VendaResourceDTO.ItemCarrinhoDTO itemDto : dto.itens) {
             Produto produto = Produto.findById(itemDto.produtoId);
             
-            if (produto != null) {
-                // Se o preço for nulo, joga ZERO com precisão de BigDecimal, senão pega o preço real
-                java.math.BigDecimal precoUnitario = produto.preco != null ? produto.preco : java.math.BigDecimal.ZERO;
-                
-                // Em BigDecimal, multiplicamos usando .multiply() e convertendo o multiplicador
-                java.math.BigDecimal subTotalBD = precoUnitario.multiply(java.math.BigDecimal.valueOf(itemDto.quantidade));
-                
-                // Acumula o subtotal convertido para double no totalGeral que vai pro HTML
-                totalGeral += subTotalBD.doubleValue();
-                
-                // Montando o cupom com os campos diretos e convertidos
-                htmlCupom.append(String.format("%02d. %s<br>", itemMapeado++, produto.nome));
-                htmlCupom.append(String.format("    %d un x R$ %.2f = R$ %.2f<br>", 
-                    itemDto.quantidade, precoUnitario.doubleValue(), subTotalBD.doubleValue()));
+            if (produto == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                               .entity(String.format("{\"erro\": \"Produto com ID %%d não encontrado!\"}", itemDto.produtoId))
+                               .build();
             }
+
+            // --- NOVA VALIDAÇÃO E BAIXA DE ESTOQUE ---
+            try {
+                produto.diminuirEstoque(itemDto.quantidade);
+            } catch (IllegalArgumentException e) {
+                // Monta o JSON concatenando diretamente a mensagem da exceção
+                return Response.status(Response.Status.BAD_REQUEST)
+                               .entity("{\"erro\": \"" + e.getMessage() + "\"}")
+                               .build();
+            }
+            // ----------------------------------------
+            
+            // Se o preço for nulo, joga ZERO com precisão de BigDecimal, senão pega o preço real
+            java.math.BigDecimal precoUnitario = produto.preco != null ? produto.preco : java.math.BigDecimal.ZERO;
+            
+            // Em BigDecimal, multiplicamos usando .multiply() e convertendo o multiplicador
+            java.math.BigDecimal subTotalBD = precoUnitario.multiply(java.math.BigDecimal.valueOf(itemDto.quantidade));
+            
+            // Acumula o subtotal convertido para double no totalGeral que vai pro HTML
+            totalGeral += subTotalBD.doubleValue();
+            
+            // Montando o cupom com os campos diretos e convertidos
+            htmlCupom.append(String.format("%02d. %s<br>", itemMapeado++, produto.nome));
+            htmlCupom.append(String.format("    %d un x R$ %.2f = R$ %.2f<br>", 
+                itemDto.quantidade, precoUnitario.doubleValue(), subTotalBD.doubleValue()));
         }
 
         htmlCupom.append("--------------------------------<br>");
