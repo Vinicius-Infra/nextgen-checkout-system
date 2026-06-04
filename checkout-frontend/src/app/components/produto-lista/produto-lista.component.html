@@ -1,8 +1,7 @@
 <div class="container mx-auto p-6">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-gray-800 tracking-tight">🛒 NextGen Checkout - Painel de Produtos</h2>
-    <button (click)="abrirModalCadastro()"
-      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 cursor-pointer">
+    <button (click)="abrirModalCadastro()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 cursor-pointer">
       + Novo Produto
     </button>
   </div>
@@ -16,7 +15,7 @@
           <th class="px-6 py-4">Código de Barras</th>
           <th class="px-6 py-4">Preço</th>
           <th class="px-6 py-4">Estoque</th>
-        </tr>
+          <th class="px-6 py-4 text-center">Ações</th> </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 bg-white">
         <tr *ngFor="let prod of produtos" class="hover:bg-gray-50 transition duration-150">
@@ -25,15 +24,19 @@
           <td class="px-6 py-4 font-mono text-xs text-gray-500">{{ prod.codigoBarras }}</td>
           <td class="px-6 py-4 text-green-600 font-semibold">R$ {{ prod.preco.toFixed(2) }}</td>
           <td class="px-6 py-4">
-            <span
-              [class]="prod.quantidadeEstoque > 10 ? 'bg-blue-50 text-blue-700 ring-blue-600/20' : 'bg-red-50 text-red-700 ring-red-600/10'"
-              class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ring-1 ring-inset">
+            <span [class]="prod.quantidadeEstoque > 10 ? 'bg-blue-50 text-blue-700 ring-blue-600/20' : 'bg-red-50 text-red-700 ring-red-600/10'" 
+                  class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ring-1 ring-inset">
               {{ prod.quantidadeEstoque }} un
             </span>
           </td>
+          <td class="px-6 py-4 text-center">
+            <button (click)="abrirModalEdicao(prod)" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold py-1 px-3 rounded-lg border border-amber-200 transition duration-150 cursor-pointer text-xs">
+              ✏️ Editar
+            </button>
+          </td>
         </tr>
         <tr *ngIf="produtos.length === 0">
-          <td colspan="5" class="px-6 py-10 text-center text-gray-400 font-medium">
+          <td colspan="6" class="px-6 py-10 text-center text-gray-400 font-medium">
             Nenhum produto cadastrado no banco de dados.
           </td>
         </tr>
@@ -42,57 +45,54 @@
   </div>
 </div>
 
-<div *ngIf="exibirModal"
-  class="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in">
+<div *ngIf="exibirModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in">
   <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-100">
-
+    
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-bold text-gray-800">📦 Cadastrar Novo Produto</h3>
-      <button (click)="fecharModal()"
-        class="text-gray-400 hover:text-gray-600 text-2xl font-semibold cursor-pointer">&times;</button>
+      <h3 class="text-xl font-bold text-gray-800">
+        {{ modoEdicao ? '📝 Editar Produto' : '📦 Cadastrar Novo Produto' }}
+      </h3>
+      <button (click)="fecharModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-semibold cursor-pointer">&times;</button>
     </div>
 
     <div class="space-y-4">
       <div>
         <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Nome do Produto</label>
-        <input type="text" [(ngModel)]="novoProduto.nome" placeholder="Ex: Arroz Agulhinha 5kg"
-          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
+        <input type="text" [(ngModel)]="novoProduto.nome" placeholder="Ex: Arroz Agulhinha 5kg" 
+               class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
       </div>
 
       <div>
         <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Código de Barras</label>
-        <input type="text" [(ngModel)]="novoProduto.codigoBarras" placeholder="Ex: 7891234567890"
-          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-mono">
+        <input type="text" [(ngModel)]="novoProduto.codigoBarras" [disabled]="modoEdicao" placeholder="Ex: 7891234567890" 
+               class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-mono disabled:bg-gray-100 disabled:text-gray-400">
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Preço (R$)</label>
           <input type="number" [(ngModel)]="novoProduto.preco" placeholder="0.00" step="0.01"
-            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
+                 class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Qtd. em Estoque</label>
-          <input type="number" [(ngModel)]="novoProduto.quantidadeEstoque" placeholder="0"
-            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
+          <input type="number" [(ngModel)]="novoProduto.quantidadeEstoque" placeholder="0" 
+                 class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm">
         </div>
       </div>
     </div>
 
-    <div *ngIf="mensagemErro"
-      class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center text-xs font-semibold text-red-700 animate-fade-in">
+    <div *ngIf="mensagemErro" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center text-xs font-semibold text-red-700 animate-fade-in">
       <span class="mr-2 text-base">⚠️</span>
       {{ mensagemErro }}
     </div>
 
     <div class="flex justify-end space-x-3 mt-6">
-      <button (click)="fecharModal()"
-        class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-lg transition cursor-pointer">
+      <button (click)="fecharModal()" class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-lg transition cursor-pointer">
         Cancelar
       </button>
-      <button (click)="salvarProduto()"
-        class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition cursor-pointer">
-        Salvar Produto
+      <button (click)="salvarProduto()" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition cursor-pointer">
+        {{ modoEdicao ? 'Salvar Alterações' : 'Salvar Produto' }}
       </button>
     </div>
 

@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // 1. IMPORTANTE: Adicione o FormsModule para habilitar o [(ngModel)]
+import { FormsModule } from '@angular/forms';
 import { ProdutoService } from '../../services/produto.service';
 import { Produto } from '../../models/produto';
 
 @Component({
   selector: 'app-produto-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule], // 2. IMPORTANTE: Registre o FormsModule aqui
+  imports: [CommonModule, FormsModule],
   templateUrl: './produto-lista.component.html',
   styleUrl: './produto-lista.component.scss'
 })
@@ -15,8 +15,8 @@ export class ProdutoListaComponent implements OnInit {
 
   produtos: Produto[] = [];
   exibirModal = false; // Controla a visibilidade da modal
-
   mensagemErro: string = '';
+  modoEdicao: boolean = false; // Define se a modal está salvando ou atualizando
 
   // Objeto que herda a nossa Interface para o formulário
   novoProduto: Produto = {
@@ -39,39 +39,64 @@ export class ProdutoListaComponent implements OnInit {
     });
   }
 
-  // Abre a modal limpando o formulário anterior
+  // Abre a modal configurada para inserção
   abrirModalCadastro(): void {
+    this.modoEdicao = false;
     this.novoProduto = { nome: '', codigoBarras: '', preco: 0, quantidadeEstoque: 0 };
+    this.mensagemErro = '';
+    this.exibirModal = true;
+  }
+
+  // Abre a modal clonando o produto selecionado para edição
+  abrirModalEdicao(produto: Produto): void {
+    this.modoEdicao = true;
+    this.mensagemErro = '';
+    // Usa o operador Spread (...) para desestruturar e clonar o objeto.
+    // Isso evita que o texto mude direto na tabela da tela enquanto o usuário digita.
+    this.novoProduto = { ...produto }; 
     this.exibirModal = true;
   }
 
   fecharModal(): void {
     this.exibirModal = false;
-    this.mensagemErro = ''; // Limpa o erro ao fechar para não sumir com o modal poluído depois
+    this.mensagemErro = '';
   }
 
-  // Envia o novo produto para o Quarkus salvar no Postgres
+  // Decide dinamicamente se envia um POST (criar) ou um PUT (atualizar) ao Quarkus
   salvarProduto(): void {
     if (!this.novoProduto.nome || !this.novoProduto.codigoBarras) {
-      alert('Por favor, preencha o Nome e o Código de Barras!');
+      this.mensagemErro = 'Por favor, preencha o Nome e o Código de Barras!';
       return;
     }
 
-    this.produtoService.criar(this.novoProduto).subscribe({
-      next: (res) => {
-        this.fecharModal();
-        this.carregarProdutos();
-        this.mensagemErro = '';
-      },
-      error: (err) => {
-        // Captura dinâmica do erro 409 enviado pelo Quarkus
-        if (err.status === 409 && err.error && err.error.erro) {
-          this.mensagemErro = err.error.erro; // "Já existe um produto cadastrado com este código de barras"
-        } else {
-          this.mensagemErro = 'Erro ao salvar produto no servidor.';
-        }
-        console.error(err);
-      }
-    });
+    if (this.modoEdicao && this.novoProduto.id) {
+      // Fluxo do ALVO 2: Atualização / Reabastecimento (PUT)
+      this.produtoService.atualizar(this.novoProduto.id, this.novoProduto).subscribe({
+        next: (res) => {
+          this.fecharModal();
+          this.carregarProdutos();
+        },
+        error: (err) => this.tratarErroServidor(err)
+      });
+    } else {
+      // Fluxo do ALVO 1: Cadastro Original (POST)
+      this.produtoService.criar(this.novoProduto).subscribe({
+        next: (res) => {
+          this.fecharModal();
+          this.carregarProdutos();
+        },
+        error: (err) => this.tratarErroServidor(err)
+      });
+    }
+  }
+
+  // Trata erros de duplicidade ou indisponibilidade de servidor centralizadamente
+  private tratarErroServidor(err: any): void {
+    if (err.status === 409 && err.error && err.error.erro) {
+      this.mensagemErro = err.error.erro;
+    } else {
+      this.mensagemErro = 'Erro ao processar requisição no servidor.';
+    }
+    console.error(err);
   }
 }
