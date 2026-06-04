@@ -12,9 +12,11 @@ import { Produto } from '../../models/produto';
   styleUrl: './produto-lista.component.scss'
 })
 export class ProdutoListaComponent implements OnInit {
-  
+
   produtos: Produto[] = [];
   exibirModal = false; // Controla a visibilidade da modal
+
+  mensagemErro: string = '';
 
   // Objeto que herda a nossa Interface para o formulário
   novoProduto: Produto = {
@@ -43,6 +45,11 @@ export class ProdutoListaComponent implements OnInit {
     this.exibirModal = true;
   }
 
+  fecharModal(): void {
+    this.exibirModal = false;
+    this.mensagemErro = ''; // Limpa o erro ao fechar para não sumir com o modal poluído depois
+  }
+
   // Envia o novo produto para o Quarkus salvar no Postgres
   salvarProduto(): void {
     if (!this.novoProduto.nome || !this.novoProduto.codigoBarras) {
@@ -51,13 +58,19 @@ export class ProdutoListaComponent implements OnInit {
     }
 
     this.produtoService.criar(this.novoProduto).subscribe({
-      next: () => {
-        this.exibirModal = false; // Fecha a modal
-        this.carregarProdutos(); // Recarrega a tabela automaticamente com o item novo!
+      next: (res) => {
+        this.fecharModal();
+        this.carregarProdutos();
+        this.mensagemErro = '';
       },
-      error: (erro) => {
-        console.error('Erro ao cadastrar produto:', erro);
-        alert('Erro ao salvar produto no servidor.');
+      error: (err) => {
+        // Captura dinâmica do erro 409 enviado pelo Quarkus
+        if (err.status === 409 && err.error && err.error.erro) {
+          this.mensagemErro = err.error.erro; // "Já existe um produto cadastrado com este código de barras"
+        } else {
+          this.mensagemErro = 'Erro ao salvar produto no servidor.';
+        }
+        console.error(err);
       }
     });
   }
