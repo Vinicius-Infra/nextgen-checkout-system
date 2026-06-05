@@ -67,6 +67,14 @@ export class ProdutoCheckoutComponent {
     this.atualizarTotalGeral();
   }
 
+  removerItemDoCarrinho(produtoId: number | undefined): void {
+    if (!produtoId) return;
+
+    this.carrinho = this.carrinho.filter(item => item.produto.id !== produtoId);
+
+    this.atualizarTotalGeral();
+  }
+
   atualizarTotalGeral(): void {
     this.valorTotalGeral = this.carrinho.reduce((acc, item) => acc + item.totalItem, 0);
   }
@@ -77,7 +85,7 @@ export class ProdutoCheckoutComponent {
     this.mensagemErro = '';
   }
 
- concluirVenda(): void {
+  concluirVenda(): void {
     // 1. Validação de segurança para carrinho vazio
     if (this.carrinho.length === 0) {
       this.mensagemErro = 'Não é possível fechar uma venda com o carrinho vazio!';
