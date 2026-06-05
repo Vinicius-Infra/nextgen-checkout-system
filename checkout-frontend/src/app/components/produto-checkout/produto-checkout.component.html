@@ -61,13 +61,25 @@
 
         <div class="space-y-3 max-h-[280px] overflow-y-auto pr-1">
           <div *ngFor="let item of carrinho; let i = index"
-            class="flex justify-between items-start text-sm text-gray-700">
-            <div class="max-w-[70%]">
+            class="flex justify-between items-start text-sm text-gray-700 group border-b border-gray-50 pb-2 last:border-0">
+
+            <div class="max-w-[65%]">
               <p class="font-semibold text-gray-800">{{ i + 1 }}. {{ item.produto.nome }}</p>
-              <p class="text-xs text-gray-400 font-mono">{{ item.quantidade }} un x R$ {{ item.produto.preco |
-                number:'1.2-2' }}</p>
+              <p class="text-xs text-gray-400 font-mono">
+                {{ item.quantidade }} un x R$ {{ item.produto.preco | number:'1.2-2' }}
+              </p>
             </div>
-            <span class="font-mono font-medium text-gray-900">R$ {{ item.totalItem | number:'1.2-2' }}</span>
+
+            <div class="flex items-center gap-3">
+              <span class="font-mono font-medium text-gray-900">R$ {{ item.totalItem | number:'1.2-2' }}</span>
+
+              <button (click)="removerItemDoCarrinho(item.produto.id)"
+                class="text-red-400 hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition cursor-pointer text-xs"
+                title="Remover este item">
+                ❌
+              </button>
+            </div>
+
           </div>
           <p *ngIf="carrinho.length === 0" class="text-center text-gray-400 py-12 text-sm font-medium">Cupom vazio</p>
         </div>
