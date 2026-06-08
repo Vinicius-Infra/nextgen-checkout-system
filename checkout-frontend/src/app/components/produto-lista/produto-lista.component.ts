@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProdutoService } from '../../services/produto.service';
 import { Produto } from '../../models/produto';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-produto-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './produto-lista.component.html',
-  styleUrl: './produto-lista.component.scss'
+  styleUrl: './produto-lista.component.scss',
 })
 export class ProdutoListaComponent implements OnInit {
 
