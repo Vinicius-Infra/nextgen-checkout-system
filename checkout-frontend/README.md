@@ -1,59 +1,91 @@
-# CheckoutFrontend
+# 🛒 NextGen Checkout - Full-Stack POS System
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.11.
+O **NextGen Checkout** é um ecossistema completo de Ponto de Venda (PDV) e Gestão de Inventário projetado com foco em alta performance, isolamento de responsabilidades e resiliência. O sistema cobre desde a operação física da frente de caixa até o controle administrativo de reabastecimento de produtos na retaguarda.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🏗️ Arquitetura do Ecossistema e Fluxo de Dados
+
+O projeto foi desenhado seguindo uma abordagem descentralizada e containerizada. Abaixo está o mapeamento de como os componentes se comunicam em tempo real durante a operação de venda e controle de estoque:
+
+[ 🖥️ Frente de Caixa ] (Angular)       [ 📊 Painel Admin ] (Angular)
+│                                       │
+│ (HTTP POST /vendas)                   │ (HTTP GET/POST/PUT)
+▼                                       ▼
+═════════════════════════════════════════════════════════════════
+🌐 NGINX REVERSE PROXY
+═════════════════════════════════════════════════════════════════
+│
+▼
+[ ☕ checkout-backend ] (Quarkus)
+│
+(Hibernate JPA)
+▼
+[ 🐘 infrastructure ] (PostgreSQL)
+
+1. **`checkout-frontend` (Angular 18+ & Tailwind CSS v4):** Interface SPA standalone, responsiva e focada na experiência do usuário (UX). Implementa navegação fluida via rotas internas e comunicação assíncrona.
+2. **`checkout-backend` (Quarkus + Java 21):** API REST de alto desempenho responsável pelas regras de negócio core. Utiliza transações gerenciadas pelo Hibernate/Panache para garantir a integridade das baixas de estoque.
+3. **`infrastructure` (PostgreSQL 16):** Banco de dados relacional robusto configurado com volumes persistentes para isolamento e segurança dos dados transacionais.
+
+---
+
+## 🚀 Principais Funcionalidades Explictadas
+
+### 🖥️ Frente de Caixa (PDV)
+![Frente de Caixa NextGen POS](assets/checkout-pdv.png)
+
+* **Leitura de Código de Barras:** Suporte simulado ou físico para bipagem de produtos...
+
+---
+
+### 📊 Painel Administrativo (Retaguarda)
+![Painel de Produtos Administativo](assets/admin-produtos.png)
+
+* **Inventário Centralizado:** Listagem completa de produtos...
+
+### 🔄 Fluxo de Resiliência de Estoque (Gargalo de Negócio)
+Quando uma venda é disparada com uma quantidade superior ao saldo real no banco de dados, o ecossistema reage de forma resiliente para proteger a operação:
+
+[ Usuário fecha venda ] ➔ [ Quarkus valida estoque ] ➔ [ Saldo Insuficiente! ]
+│
+[ Tela limpa / Cupom retido ] 🡴 [ Alerta 400 exibido na tela ] 🡴 [ Rollback no Banco ]
+
+* **Garantia de Transação:** A operação é protegida por um contexto `@Transactional`. Se houver falha em qualquer item do carrinho, o banco executa um **Rollback** automático.
+* **Feedback ao Operador:** O erro `400 Bad Request` é interceptado pelo Angular, exibindo uma mensagem dinâmica no PDV: `⚠️ Estoque insuficiente para o produto: X (Disponível: Y, Solicitado: Z)`.
+
+---
+
+## 🛠️ Stack Tecnológica
+
+* **Linguagens:** Java 21, TypeScript
+* **Framework Backend:** Quarkus (RESTEasy Reactive, Hibernate ORM com Panache)
+* **Framework Frontend:** Angular (Components Standalone, RxJS, Router)
+* **Estilização:** Tailwind CSS v4
+* **Banco de Dados:** PostgreSQL 16
+* **Ambiente & Infra:** Docker, Docker Compose, Nginx
+
+---
+
+## 📦 Como Executar o Projeto Localmente
+
+### 1. Clonar o Repositório
 
 ```bash
-ng serve
-```
+git clone [https://github.com/Vinicius-Infra/nextgen-checkout-system.git](https://github.com/Vinicius-Infra/nextgen-checkout-system.git)
+cd nextgen-checkout-system
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+2. Subir a Infraestrutura e Aplicações
 
-## Code scaffolding
+Execute o comando abaixo na raiz do diretório para compilar as imagens e inicializar os containers em segundo plano:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+docker compose up -d --build
 
-```bash
-ng generate component component-name
-```
+3. Acessar as Aplicações
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Assim que o Docker Compose finalizar a inicialização, as pontas estarão disponíveis nos seguintes endereços:
 
-```bash
-ng generate --help
-```
+Frente de Caixa (Frontend): http://localhost:4200
 
-## Building
+Painel de Controle / Produtos: http://localhost:4200/produtos
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-### Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+API REST (Backend Quarkus): http://localhost:8080
