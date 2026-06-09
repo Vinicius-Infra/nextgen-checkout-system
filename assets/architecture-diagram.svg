@@ -1,0 +1,133 @@
+<svg id="architecture-svg" viewBox="0 0 1000 700" width="100%" height="100%" class="max-h-[550px]" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background defs for modern styling, markers and filters -->
+                <defs>
+                    <linearGradient id="angularGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#E53935"/>
+                        <stop offset="100%" stop-color="#B71C1C"/>
+                    </linearGradient>
+                    <linearGradient id="nginxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#10B981"/>
+                        <stop offset="100%" stop-color="#047857"/>
+                    </linearGradient>
+                    <linearGradient id="quarkusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#F97316"/>
+                        <stop offset="100%" stop-color="#C2410C"/>
+                    </linearGradient>
+                    <linearGradient id="postgresGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#336791"/>
+                        <stop offset="100%" stop-color="#203E5F"/>
+                    </linearGradient>
+                    
+                    <!-- Arrowheads -->
+                    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#4B5563"/>
+                    </marker>
+                    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+                    </marker>
+                    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981"/>
+                    </marker>
+                </defs>
+
+                <!-- Background Base inside SVG (Ensures dark background on export) -->
+                <rect width="1000" height="700" fill="#090d16" rx="16"/>
+                <grid class="opacity-10"/>
+
+                <!-- Grid pattern for professional look -->
+                <g opacity="0.05">
+                    <path d="M 0,50 L 1000,50 M 0,100 L 1000,100 M 0,150 L 1000,150 M 0,200 L 1000,200 M 0,250 L 1000,250 M 0,300 L 1000,300 M 0,350 L 1000,350 M 0,400 L 1000,400 M 0,450 L 1000,450 M 0,500 L 1000,500 M 0,550 L 1000,550 M 0,600 L 1000,600 M 0,650 L 1000,650" stroke="#FFFFFF" stroke-width="1"/>
+                    <path d="M 100,0 L 100,700 M 200,0 L 200,700 M 300,0 L 300,700 M 400,0 L 400,700 M 500,0 L 500,700 M 600,0 L 600,700 M 700,0 L 700,700 M 800,0 L 800,700 M 900,0 L 900,700" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
+
+                <!-- Flow Connectors (Lines) -->
+                <!-- Flow: Frontend POS -> NGINX -->
+                <path id="flow-pos" d="M 280,180 C 280,260 470,230 470,300" fill="none" stroke="#3B82F6" stroke-width="3" marker-end="url(#arrow-blue)"/>
+                <path d="M 280,180 C 280,260 470,230 470,300" fill="none" stroke="#60A5FA" stroke-width="3" class="data-pulse" opacity="0.8"/>
+
+                <!-- Flow: Admin -> NGINX -->
+                <path id="flow-admin" d="M 720,180 C 720,260 530,230 530,300" fill="none" stroke="#10B981" stroke-width="3" marker-end="url(#arrow-green)"/>
+                <path d="M 720,180 C 720,260 530,230 530,300" fill="none" stroke="#34D399" stroke-width="3" class="data-pulse" opacity="0.8"/>
+
+                <!-- Flow: NGINX -> Quarkus -->
+                <path id="flow-nginx-backend" d="M 500,380 L 500,450" fill="none" stroke="#F59E0B" stroke-width="3" marker-end="url(#arrow)"/>
+                <path d="M 500,380 L 500,450" fill="none" stroke="#FBBF24" stroke-width="3" class="data-pulse" opacity="0.8"/>
+
+                <!-- Flow: Quarkus -> PostgreSQL -->
+                <path id="flow-backend-db" d="M 500,530 L 500,590" fill="none" stroke="#4B5563" stroke-width="3" marker-end="url(#arrow)"/>
+                <path d="M 500,530 L 500,590" fill="none" stroke="#9CA3AF" stroke-width="3" class="data-pulse" opacity="0.8"/>
+
+                <!-- Flow Labels -->
+                <rect x="250" y="225" width="150" height="26" rx="6" fill="#111827" stroke="#1F2937"/>
+                <text x="325" y="242" fill="#9CA3AF" font-size="11" font-weight="600" text-anchor="middle">HTTP POST /vendas</text>
+
+                <rect x="600" y="225" width="160" height="26" rx="6" fill="#111827" stroke="#1F2937"/>
+                <text x="680" y="242" fill="#9CA3AF" font-size="11" font-weight="600" text-anchor="middle">HTTP GET / POST / PUT</text>
+
+                <rect x="520" y="402" width="110" height="26" rx="6" fill="#111827" stroke="#1F2937"/>
+                <text x="575" y="419" fill="#9CA3AF" font-size="11" font-weight="600" text-anchor="middle">Reverse Proxy</text>
+
+                <rect x="520" y="542" width="110" height="26" rx="6" fill="#111827" stroke="#1F2937"/>
+                <text x="575" y="559" fill="#9CA3AF" font-size="11" font-weight="600" text-anchor="middle">Hibernate JPA</text>
+
+
+                <!-- NODE: Frente de Caixa (POS) -->
+                <g transform="translate(150, 80)">
+                    <rect width="260" height="100" rx="14" fill="url(#angularGrad)" class="neon-glow"/>
+                    <!-- Sub-border overlay for premium glassmorphism card -->
+                    <rect width="260" height="100" rx="14" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5"/>
+                    <!-- Icon placeholder / design -->
+                    <circle cx="45" cy="50" r="22" fill="#FFFFFF" fill-opacity="0.15"/>
+                    <text x="45" y="56" font-size="22" text-anchor="middle">🖥️</text>
+                    <!-- Text details -->
+                    <text x="82" y="42" fill="#FFFFFF" font-size="15" font-weight="800">Frente de Caixa</text>
+                    <text x="82" y="62" fill="#FFCDD2" font-size="12" font-weight="600">checkout-frontend</text>
+                    <!-- Tech Tag -->
+                    <rect x="82" y="70" width="75" height="18" rx="4" fill="#FFFFFF" fill-opacity="0.2"/>
+                    <text x="119" y="82" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">ANGULAR 18</text>
+                </g>
+
+                <!-- NODE: Painel Admin -->
+                <g transform="translate(590, 80)">
+                    <rect width="260" height="100" rx="14" fill="url(#angularGrad)" class="neon-glow"/>
+                    <rect width="260" height="100" rx="14" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5"/>
+                    <circle cx="45" cy="50" r="22" fill="#FFFFFF" fill-opacity="0.15"/>
+                    <text x="45" y="56" font-size="22" text-anchor="middle">📊</text>
+                    <text x="82" y="42" fill="#FFFFFF" font-size="15" font-weight="800">Painel Admin</text>
+                    <text x="82" y="62" fill="#FFCDD2" font-size="12" font-weight="600">checkout-frontend</text>
+                    <rect x="82" y="70" width="75" height="18" rx="4" fill="#FFFFFF" fill-opacity="0.2"/>
+                    <text x="119" y="82" fill="#FFFFFF" font-size="10" font-weight="800" text-anchor="middle">ANGULAR 18</text>
+                </g>
+
+                <!-- NODE: NGINX Proxy -->
+                <g transform="translate(370, 300)">
+                    <rect width="260" height="80" rx="14" fill="url(#nginxGrad)" class="neon-glow-green"/>
+                    <rect width="260" height="80" rx="14" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5"/>
+                    <circle cx="45" cy="40" r="20" fill="#FFFFFF" fill-opacity="0.15"/>
+                    <text x="45" y="46" font-size="18" text-anchor="middle">🌐</text>
+                    <text x="82" y="38" fill="#FFFFFF" font-size="14" font-weight="800">NGINX Proxy Reverso</text>
+                    <text x="82" y="56" fill="#A7F3D0" font-size="11" font-weight="600">Portas 80 / 4200 / 8080</text>
+                </g>
+
+                <!-- NODE: Quarkus Backend -->
+                <g transform="translate(370, 450)">
+                    <rect width="260" height="80" rx="14" fill="url(#quarkusGrad)" class="neon-glow-orange"/>
+                    <rect width="260" height="80" rx="14" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5"/>
+                    <circle cx="45" cy="40" r="20" fill="#FFFFFF" fill-opacity="0.15"/>
+                    <text x="45" y="46" font-size="18" text-anchor="middle">☕</text>
+                    <text x="82" y="36" fill="#FFFFFF" font-size="14" font-weight="800">API Backend REST</text>
+                    <text x="82" y="54" fill="#FFEDD5" font-size="11" font-weight="600">checkout-backend</text>
+                    <rect x="82" y="60" width="85" height="15" rx="3" fill="#FFFFFF" fill-opacity="0.2"/>
+                    <text x="124" y="71" fill="#FFFFFF" font-size="9" font-weight="800" text-anchor="middle">QUARKUS &amp; JAVA 21</text>
+                </g>
+
+                <!-- NODE: PostgreSQL Database -->
+                <g transform="translate(370, 590)">
+                    <rect width="260" height="80" rx="14" fill="url(#postgresGrad)"/>
+                    <rect width="260" height="80" rx="14" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1.5"/>
+                    <circle cx="45" cy="40" r="20" fill="#FFFFFF" fill-opacity="0.1"/>
+                    <text x="45" y="46" font-size="18" text-anchor="middle">🐘</text>
+                    <text x="82" y="38" fill="#FFFFFF" font-size="14" font-weight="800">Banco de Dados Relacional</text>
+                    <text x="82" y="56" fill="#E0F2FE" font-size="11" font-weight="600">infrastructure (PostgreSQL 16)</text>
+                </g>
+            </svg>
