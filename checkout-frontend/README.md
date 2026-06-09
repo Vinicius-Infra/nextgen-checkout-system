@@ -18,6 +18,7 @@ graph TD
     style C fill:#111,stroke:#333,stroke-width:2px,color:#fff
     style E fill:#336791,stroke:#2f5e88,stroke-width:1px,color:#fff
     style D fill:#e67e22,stroke:#d35400,stroke-width:1px,color:#fff
+
 ```
 
 1. **`checkout-frontend` (Angular 18+ & Tailwind CSS v4):** Interface SPA standalone, responsiva e focada na experiência do usuário (UX). Implementa navegação fluida via rotas internas e comunicação assíncrona.
