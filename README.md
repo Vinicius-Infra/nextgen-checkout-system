@@ -2,6 +2,12 @@
 
 O **NextGen Checkout** é um ecossistema completo de Ponto de Venda (PDV) e Gestão de Inventário projetado com foco em alta performance, isolamento de responsabilidades e resiliência. O sistema cobre desde a operação física da frente de caixa até o controle administrativo de reabastecimento de produtos na retaguarda.
 
+![Java](https://img.shields.io/badge/Java-21-red)
+![Quarkus](https://img.shields.io/badge/Quarkus-3-blue)
+![Angular](https://img.shields.io/badge/Angular-18-red)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+
 ---
 
 ## 🏗️ Arquitetura do Ecossistema e Fluxo de Dados
